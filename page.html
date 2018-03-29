@@ -1,0 +1,89 @@
+<html>
+    <head>
+        <title>Control Site</title>
+        <style>
+            table, th, td
+            {
+                   border: 1px solid white;
+                   align-content: center;
+                   font-size: 30px;
+            }
+            select, button, option, span
+            {
+                font-size: 30px;
+            }
+            body
+            {
+                background-color: black;
+                color: white;
+            }
+        </style>
+        <script type="text/javascript">
+            var intSet;
+
+            function DoLights()
+            {
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                  if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("res").innerHTML = this.responseText;
+                  }
+                };
+                var type = document.getElementById("type").value;
+                var timeSpan = document.getElementById("time").value;
+                xhttp.open("GET", "lights?timespan=" + timeSpan + "&state=" + type, true);
+                xhttp.send();
+            }
+
+            function getValue(control)
+            {
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                  if (this.readyState == 4 && this.status == 200) {
+                    var parts = this.responseText.split(";");
+                    document.getElementById(parts[0]).innerHTML = parts[1];
+                  }
+                };
+                xhttp.open("GET", "temps?position=" + control, true);
+                xhttp.send();
+            }
+
+            function allValues()
+            {
+                getValue("external");
+                getValue("door");
+                getValue("bench");
+                getValue("rear");
+            }
+
+            function startTimer()
+            {
+                intSet = window.setInterval(allValues, 10000);
+            }
+        </script>
+    </head>
+    <body onload="startTimer();">
+        <table style="width:100%">
+            <tr>
+                <th colspan="4">Control Panel</th>
+            </tr>
+            <tr>
+                <td colspan="4">Lights: <select id="type"><option value="off">Off</option><option value="on">On</option><option value="towards">Toward Shed</option><option value="away">Away Shed</option></select>&nbsp;&nbsp;&nbsp;Time: <select id="time"><option>5</option><option>10</option><option>15</option><option>20</option><option>25</option><option>30</option><option>45</option><option>-1</option></select>&nbsp;&nbsp;&nbsp;<button type="button" onclick="DoLights()">Go</button>&nbsp;<span id="res"</span</td>
+            </tr>
+            <tr>
+                <td colspan="4">&nbsp;</td>
+            </tr>
+            <tr>
+                <td>External: <span id="external"></span></td>
+                <td>Door: <span id="door"></span></td>
+                <td>Bench: <span id="bench"></span></td>
+                <td>Rear: <span id="rear"</span></td>
+            </tr>
+            <tr>
+                <td colspan="4">&nbsp;<span id="status"></span>&nbsp;</td>
+            </tr>
+        </table>
+        <script type="text/javascript">
+        </script>
+    </body>
+</html>
